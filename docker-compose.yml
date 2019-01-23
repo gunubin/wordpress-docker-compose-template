@@ -5,10 +5,10 @@ services:
      image: mysql:5.7
      container_name: wordpress-db-container
      volumes:
-       - ./data/mysql:/var/lib/mysql
        #- db_data:/var/lib/mysql
-       #- ./data/mysql.sql:/docker-entrypoint-initdb.d/install_wordpress.sql
-
+       - ./data/mysql/conf.d:/etc/mysql/conf.d
+       - ./data/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+       - mysql:/var/lib/mysql
      restart: always
      env_file: .env
 
@@ -25,5 +25,12 @@ services:
      env_file: .env
      environment:
        WORDPRESS_DB_HOST: db:3306
-#volumes:
-#    db_data:
+
+   phpmyadmin:
+     image: phpmyadmin/phpmyadmin
+     container_name: wordpress-phpmyadmin-container
+     ports:
+       - 22222:80
+
+volumes:
+    mysql:
