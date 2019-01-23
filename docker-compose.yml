@@ -33,6 +33,9 @@ services:
        WORDPRESS_DB_NAME: wordpress
        WORDPRESS_DB_USER: wordpress
        WORDPRESS_DB_PASSWORD: wordpress
+       WORDPRESS_CONFIG_EXTRA: |
+         define('WP_HOME','http://localhost:${HOST_PORT}');
+         define('WP_SITEURL','http://localhost:${HOST_PORT}');
 
    phpmyadmin:
      image: phpmyadmin/phpmyadmin
