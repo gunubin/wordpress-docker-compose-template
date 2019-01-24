@@ -1,15 +1,17 @@
-version: '2'
+version: '3'
 
 services:
    db:
-     image: mysql:5.7
-     container_name: wordpress-db-container
+     image: mysql:latest
+     container_name: ${PROJECT_NAME}-db
      volumes:
-       #- db_data:/var/lib/mysql
        - ./data/mysql/conf.d:/etc/mysql/conf.d
        - ./data/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
        - mysql:/var/lib/mysql
+     command: ['--default_authentication_plugin=mysql_native_password', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
      restart: always
+     ports:
+       - "${DB_PORT}:3306"
      env_file: .env
      environment:
        MYSQL_ROOT_PASSWORD: wordpress
@@ -19,7 +21,7 @@ services:
 
    wordpress:
      image: wordpress:latest
-     container_name: wordpress-container
+     container_name: ${PROJECT_NAME}-wordpress
      depends_on:
        - db
      ports:
@@ -36,12 +38,6 @@ services:
        WORDPRESS_CONFIG_EXTRA: |
          define('WP_HOME','http://localhost:${HOST_PORT}');
          define('WP_SITEURL','http://localhost:${HOST_PORT}');
-
-   phpmyadmin:
-     image: phpmyadmin/phpmyadmin
-     container_name: wordpress-phpmyadmin-container
-     ports:
-       - 22222:80
 
 volumes:
     mysql:
